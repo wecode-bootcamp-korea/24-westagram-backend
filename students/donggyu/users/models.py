@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models.fields import EmailField
 
 class User(models.Model):
     name         = models.CharField(max_length=128)
