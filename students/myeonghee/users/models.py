@@ -8,7 +8,7 @@ class User(models.Model):
     cell_number = models.CharField(max_length=13)
     address     = models.CharField(max_length=50)
     birthday	= models.DateField("")
-    sex	        = models.CharField("")
+    sex	        = models.CharField(max_length=2)
 
 
     class Meta:
