@@ -5,10 +5,10 @@ class User(models.Model):
     name        = models.CharField(max_length=45)
     email       = models.EmailField()
     password    = models.CharField(max_length=16)
-    cell_number = models.CharField()
-    address     = models.CharField()
+    cell_number = models.CharField(max_length=13)
+    address     = models.CharField(max_length=50)
     birthday	= models.DateField("")
-    sex	        = models.DateField("")
+    sex	        = models.CharField("")
 
 
     class Meta:
