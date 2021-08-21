@@ -6,7 +6,7 @@ class User(models.Model):
     email       = models.EmailField()
     password    = models.CharField(max_length=16)
     cell_number = models.CharField()
-    address	    = models.CharField()
+    address     = models.CharField()
     birthday	= models.DateField("")
     sex	        = models.DateField("")
 
