@@ -9,4 +9,4 @@ class User(models.Model):
     address      = models.CharField(max_length=100)
 
     class Meta:
-        db_name = "users"
+        db_table = "users"
