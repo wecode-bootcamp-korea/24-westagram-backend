@@ -5,6 +5,8 @@ from django.views import View
 
 from users.models import User
 from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
+
 import re
 
 class SignupView(View) :
@@ -39,3 +41,21 @@ class SignupView(View) :
             #
         except IntegrityError as e:
             return JsonResponse({'MESSAGE':'DUPLICATION_ERROR'}, status=400)
+
+class LoginView(View) :
+    def post(self, request) :
+        data = json.loads(request.body)
+        if ('email' not in data) or ('password' not in data): #password, email 포함 확인
+            return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
+        try :
+            user = User.objects.get(email=data['email'])
+            if user.password != data['password'] :
+                return JsonResponse({'MESSAGE':'INVALID_USER'}, status=401)
+            return JsonResponse({'MESSAGE':'SUCCESS'}, status=200)
+        except User.DoesNotExist as e :
+            return JsonResponse({'MESSAGE':'INVALID_USER'}, status=401)
+
+
+
+
+
