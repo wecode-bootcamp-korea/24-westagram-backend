@@ -2,7 +2,7 @@ from django.db import models
 
 
 class User(models.Model):
-    user_name     = models.CharField(max_length=64)
+    name          = models.CharField(max_length=64)
     email         = models.EmailField()
     password      = models.CharField(max_length=128)
     phone_number  = models.CharField(max_length=32)
