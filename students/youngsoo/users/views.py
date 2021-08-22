@@ -8,7 +8,8 @@ import re
 
 
 # Create your views here.
-class UserView(View):
+class SignupView(View):
+    # Registering a user 
     def post(self, request):
         data = json.loads(request.body)
 
@@ -44,10 +45,9 @@ class UserView(View):
             return JsonResponse({'message' : 'KEY_ERROR'}, status = 400)
         except IntegrityError:
             return JsonResponse({"message" : "INVALID EMAIL OR PASSWORD"}, status = 400)
-        
-            
 
-        
+
+    
         
 
 
