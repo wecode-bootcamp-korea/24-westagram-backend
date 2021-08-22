@@ -10,9 +10,13 @@ from . validation import *
 
 class UserView(View):
     def post(self,request):
-        data = json.loads(request.body)
+        data          = json.loads(request.body)
         email_data    = data['email']
         password_data = data['password']
+        user_infos    = User.objects.all()
+        user_emails   = []
+        for user in user_infos:
+            user_emails.append(user.email)
         try:
             if not '@' in email_data or Validate_email(email_data)=='ValidationError' or Validate_password(password_data)=='ValidationError':
                 return JsonResponse(
@@ -22,6 +26,11 @@ class UserView(View):
             elif Validate_email(email_data)=='KeyError' or Validate_password(password_data)=='KeyError':
                 return JsonResponse(
                         {'message' : 'KeyError'},
+                        status = 400
+                        )
+            elif email_data in user_emails:
+                return JsonResponse(
+                        {'message' : 'AlreadyExists'},
                         status = 400
                         )
             user = User.objects.create(
