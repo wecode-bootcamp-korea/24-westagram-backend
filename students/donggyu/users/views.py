@@ -14,22 +14,16 @@ class SinupView(View):
             phone_number = data['phone_number']
             address      = data['address']
 
-            goodmail = re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.\
-                                [a-zA-Z0-9-.]+$', email)
-            if not goodmail:
+            if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
                 return JsonResponse({'MESSAGE': "NOT_EMAIL"}, status=400)
 
-            goodpassword=re.match("^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])\
-                                    [A-Za-z\d@$!%*#?&]{8,2048}$", password)
-            if not goodpassword:
+            if not re.match("^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,2048}$", password):
                 return JsonResponse({'MESSAGE': "INVALID_PASSWORD"}, status=400)
         
-            goodphone = re.match('^\d{3}-\d{3,4}-\d{4}$', phone_number)
-            if not goodphone:
+            if not re.match('^\d{3}-\d{3,4}-\d{4}$', phone_number):
                 return JsonResponse({'MESSAGE': 'INVALID_PHONENUMBER'}, status=400)
 
-            checkmail = User.objects.filter(email=email)
-            if checkmail:
+            if User.objects.filter(email=email).exists():
                 return JsonResponse({'MESSAGE': 'REGISTERED_EMAIL'})
 
             user = User(
