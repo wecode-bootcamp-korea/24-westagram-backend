@@ -3,7 +3,6 @@ import re
 
 from django.http import JsonResponse
 from django.views import View
-from django.core.exceptions import ObjectDoesNotExist
 
 from users.models import User
 
@@ -12,6 +11,9 @@ class LoginView(View) :
         try :
             data = json.loads(request.body)
        
+            if !User.objects.filter(email=data['email']).exists() :
+                return JsonResponse({'MESSAGE':'INVALID_USER'}, status=401)
+
             user = User.objects.get(email=data['email'])
         
             if user.password != data['password'] :
@@ -21,7 +23,3 @@ class LoginView(View) :
 
         except KeyError :
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
-
-        except User.DoesNotExist :
-            return JsonResponse({'MESSAGE':'INVALID_USER'}, status=401)
-
