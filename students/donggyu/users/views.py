@@ -1,8 +1,10 @@
 import json
 import re
-from django.http import JsonResponse
+
+from django.http  import JsonResponse
 from django.views import View
-from .models import User
+
+from .models      import User
 
 class SinupView(View):
     def post(self, request):
