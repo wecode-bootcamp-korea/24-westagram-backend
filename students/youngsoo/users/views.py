@@ -51,11 +51,17 @@ class LoginView(View):
     def get(self, request):
         data = json.loads(request.body)
         try:
-            if data['email'] in User.objects.filter(email=data['email']):
-                return JsonResponse({"message": "SUCCESS"}, status = 200)
-        
+            if not User.objects.filter(email=data['email']).exists():
+                return JsonResponse({"message": "INVALID_USER"}, status = 401)
+            
+            if not User.objects.filter(password=data['password']).exists():
+                return JsonResponse({"message" : "INVALID_USER"}, status = 401)
+
+            else:
+                return JsonResponse({'message' : 'SUCCESS'}, status = 200)
+                
         except KeyError:
-            return JsonResponse({"message" : "INVALID_USER"}, status = 400)
+            return JsonResponse({"message" : "KEY_ERROR"}, status = 400)
 
     
 
