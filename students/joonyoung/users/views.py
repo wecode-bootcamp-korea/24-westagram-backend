@@ -63,7 +63,6 @@ class Login(View):
             email    = data["email"]
             password = data["password"]
 
-
             if User.objects.filter(email=email).exists():
                 user = User.objects.get(email=email)
 
