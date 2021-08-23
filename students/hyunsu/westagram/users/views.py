@@ -32,4 +32,4 @@ class UserView(View):
             return JsonResponse({'message' : 'SUCCESS'}, status=201)
        
         except KeyError:
-            return  JsonResponse({"message": "KEY_ERROR"}, status=400)
+            return JsonResponse({"message": "KEY_ERROR"}, status=400)
