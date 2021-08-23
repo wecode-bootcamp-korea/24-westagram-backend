@@ -10,7 +10,7 @@ class UserView(View):
     def post(self, request):
         data             = json.loads(request.body)
         emali_format     = re.compile('\w+[@]\w+[.]\w+')
-        password_compare = re.compile('^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=])[0-9a-zA-Z!@#$%^&*]{8,}$')
+        password_compare = re.compile('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$')
 
         try:   
             if not emali_format.search(data['email']):
@@ -33,3 +33,16 @@ class UserView(View):
        
         except KeyError:
             return JsonResponse({"message": "KEY_ERROR"}, status=400)
+
+class UserSign(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        
+        try:
+            if not User.objects.filter(email=data['email'],password=data['password']).exists():
+                return JsonResponse({"message" : "INVALID_USER"}, status=401)
+
+            return JsonResponse({"message" : "SUCCESS"}, status=200)
+
+        except KeyError:
+            return JsonResponse({'message' : "KEY_ERROR"}, status=400)
