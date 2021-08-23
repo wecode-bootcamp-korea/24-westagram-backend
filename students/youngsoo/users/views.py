@@ -1,51 +1,64 @@
-from django.shortcuts import render
-from django.views import View
-from django.http import JsonResponse
-from users.models import User
-from django.db.utils import IntegrityError
 import json
 import re
 
+from django.views import View
+from django.http import JsonResponse
+from django.db.utils import IntegrityError
 
-# Create your views here.
+from users.models import User
+
 class SignupView(View):
     # Registering a user 
     def post(self, request):
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
 
-        def is_email_valid(email):
             email_valid = re.search('[a-zA-Z0-9.+-]+@'
                                     '[a-zA-Z0-9-]+\.'
-                                    '[a-zA-Z0-9.]+', email)
-            if email_valid:
-                return email
-            raise IntegrityError             
+                                    '[a-zA-Z0-9.]+', data['email'])      
 
-        def is_password_valid(password):
             password_valid = re.fullmatch('^(?=.*[a-z])(?=.*[A-Z])'
                                           '(?=.*\d)(?=.*[@$!%*?&])'
-                                          '[A-Za-z\d@$!%*?&]{8,32}$', password)
-            if password_valid:
-                return password
-            raise IntegrityError
+                                          '[A-Za-z\d@$!%*?&]{8,32}$', data['password'])
             
-        try:
-            user = User.objects.create(
-                name          = data['name'],
-                email         = is_email_valid(data['email']),
-                password      = is_password_valid(data['password']),
-                phone_number  = data['phone_number'],
-                date_of_birth = data['date_of_birth'],
-                gender        = data['gender'],
-                address       = data['address'],
-            )
-            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
+            email_duplicate = User.objects.filter(email=data['email']).exists()
+
+            if not email_valid:
+                return JsonResponse({'message' : 'INVALID EMAIL'}, status = 400)
+            
+            if not password_valid:
+                return JsonResponse({'message' : 'INVALID PASSWORD'}, status = 400)
+
+            if email_duplicate:
+                return JsonResponse({'message' : 'EMAIL DUPLICATE'}, status = 400)
+            
+            else:
+                User.objects.create(
+                    name          = data['name'],
+                    email         = data['email'],
+                    password      = data['password'],
+                    phone_number  = data['phone_number'],
+                    date_of_birth = data['date_of_birth'],
+                    gender        = data['gender'],
+                    address       = data['address'],
+                )
+                return JsonResponse({'message' : 'SUCCESS'}, status = 201)
 
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'}, status = 400)
-        except IntegrityError:
-            return JsonResponse({"message" : "INVALID EMAIL OR PASSWORD"}, status = 400)
 
+
+class LoginView(View):
+    def get(self, request):
+        data = json.loads(request.body)
+        try:
+            if data['email'] in User.objects.filter(email=data['email']):
+                return JsonResponse({"message": "SUCCESS"}, status = 200)
+        
+        except KeyError:
+            return JsonResponse({"message" : "INVALID_USER"}, status = 400)
+
+    
 
     
         
