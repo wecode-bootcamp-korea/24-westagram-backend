@@ -32,4 +32,3 @@ class SignupView(View) :
         
         except KeyError :
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
-
