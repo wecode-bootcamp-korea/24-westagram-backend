@@ -1,11 +1,8 @@
 import json
 import re
 
-from django.shortcuts import render
 from django.http      import JsonResponse
 from django.views     import View
-
-from django.db.models.fields import EmailField
 
 from users.models     import User
 
@@ -34,17 +31,14 @@ class UsersView(View):
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'MESSAGE':'Existed e-mail'}, status=400)
 
-            user = User.objects.create(
-                name = name,
-                email = email,
-                password = password,
+            User.objects.create(
+                name              = name,
+                email             = email,
+                password          = password,
                 cell_phone_number = cell_phone_number
             )
 
             return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
 
-
-
-        
         except KeyError:
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
