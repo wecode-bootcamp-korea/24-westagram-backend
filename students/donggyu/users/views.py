@@ -43,3 +43,24 @@ class SinupView(View):
         except KeyError:
             return JsonResponse({'MESSAGE': "KEY_ERROR"}, status=400)
        
+
+class LoginView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data['email']
+            password = data['password']
+            
+            if not User.objects.filter(email=email).exists():
+                return JsonResponse({"MESSAGE": "INVALID_USER"}, status=401)
+
+            user = User.objects.get(email=email)
+            
+            if user.password != password:
+                return JsonResponse({"MESSAGE": "INVALID_USER"}, status=401)
+
+            return JsonResponse({"message": "SUCCESS"}, status=200)
+        except ValueError:
+            return JsonResponse({'MESSAGE': "VALUE_ERROR"}, status=400)
+        except KeyError:
+            return JsonResponse({'MESSAGE': "KEY_ERROR"}, status=400)
