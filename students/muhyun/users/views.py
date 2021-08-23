@@ -18,6 +18,8 @@ class SignUpView(View):
                 'phone_number': data["phone_number"],
                 'address'     : data["address"],
             }
+            if not user_info['name'] or not user_info['email']:
+                return JsonResponse({"message": "VALUE_ERROR"}, status=400)
 
         except KeyError:
             return JsonResponse({"message": "KEY_ERROR"}, status = 400)
