@@ -3,7 +3,8 @@ import re
 
 from django.http import JsonResponse
 from django.views import View
-from hyeonmuk.models import User
+
+from users.models import User
 
 class UsersView(View):
     def post(self, request):
@@ -12,19 +13,19 @@ class UsersView(View):
             email               = data["email"]
             password            = data["password"]
             email_validation    = re.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
-            password_validation = re.compile("^.*(?=^.{8,}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$")
+            password_validation = re.compile("^.*(?=^.{8,}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%*^&+=]).*$")
 
             if email == "" or password == "":
-                return JsonResponse({"message":"NotInput_ERROR"}, status=400)
+                return JsonResponse({"message":"KEY_ERROR"}, status=400)
             
-            if email_validation.match(email) == None:
-                return JsonResponse({"message":"Email_Validation_ERROR"}, status=400)
+            if not email_validation.match(email):
+                return JsonResponse({"message":"EMAIL_VALIDATION_ERROR"}, status=400)
 
-            if password_validation.match(password) == None:
-                return JsonResponse({"message":"Password_Validation_ERROR"}, status=400)
+            if not password_validation.match(password):
+                return JsonResponse({"message":"PASSWORD_VALIDATION_ERROR"}, status=400)
 
             if User.objects.filter(email=email).exists():
-                return JsonResponse({"message":"Duplication_ERROR"}, status=400)
+                return JsonResponse({"message":"DUPLICATION_ERROR"}, status=400)
 
             User.objects.create(
                 name           = data["name"],
@@ -37,4 +38,4 @@ class UsersView(View):
             return JsonResponse({"message": "SUCCESS"}, status=201)
             
         except KeyError:
-            return JsonResponse({"message":"Key_ERROR"}, status=400)
+            return JsonResponse({"message":"KEY_ERROR"}, status=400)
