@@ -3,4 +3,4 @@ from users.views import UsersView
 
 urlpatterns = [
     path('', UsersView.as_view()),
-]
+]  

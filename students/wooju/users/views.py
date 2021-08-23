@@ -13,19 +13,16 @@ class UsersView(View):
             email = data['email']
             password = data['password']
 
-            if email == '' or password == '':
-                return JsonResponse({'MESSAGE':'EMPTY_ERROR'}, status=400)
-            
             Valid_email = re.compile('^[a-zA-Z0-9_-]+@[a-z]+.[a-z]+$')
             if not Valid_email.match(email):
-                return JsonResponse({'MESSAGE':'NOT_VALID_EMAIL'}, status=400)
+                return JsonResponse({'MESSAGE':'EMAIL_VALIDATION'}, status=400)
                 
             Valid_password = re.compile('^[a-zA_Z0-9$@$!%*#?&]{8,}$')
             if not Valid_password.match(password):
-                return JsonResponse({'MESSAGE':'NOT_VALID_PASSWORD'}, status=400)
+                return JsonResponse({'MESSAGE':'PASSWORD_VALIDATION'}, status=400)
             
             if User.objects.filter(email=email).exists():
-                return JsonResponse({'MESSAGE':'DUPLICATE_EMAIL'}, status=400)
+                return JsonResponse({'MESSAGE':'AlREADY_EXISTED_EMAIL'}, status=400)
             
             user = User.objects.create(
                 name          = data['name'],
