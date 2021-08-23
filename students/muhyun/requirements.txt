@@ -1,0 +1,9 @@
+asgiref @ file:///tmp/build/80754af9/asgiref_1625643473416/work
+certifi==2021.5.30
+Django==3.2.6
+django-cors-headers==3.8.0
+mysqlclient
+psycopg2
+pytz
+sqlparse
+typing-extensions
