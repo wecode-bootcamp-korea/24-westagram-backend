@@ -14,9 +14,6 @@ class UsersView(View):
             password            = data["password"]
             email_validation    = re.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
             password_validation = re.compile("^.*(?=^.{8,}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%*^&+=]).*$")
-
-            if email == "" or password == "":
-                return JsonResponse({"message":"KEY_ERROR"}, status=400)
             
             if not email_validation.match(email):
                 return JsonResponse({"message":"EMAIL_VALIDATION_ERROR"}, status=400)
