@@ -1,5 +1,6 @@
 import re
 import json
+import bcrypt
 from json.decoder import JSONDecodeError
 
 from django.http import JsonResponse
@@ -35,7 +36,7 @@ class SignUp(View):
                 user = User.objects.create(
                     name         = name,
                     email        = email,
-                    password     = password,
+                    password     = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
                     phone_number = phone_number,
                     bio          = data.get("bio"),
                 )
