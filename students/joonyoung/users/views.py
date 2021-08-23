@@ -28,11 +28,10 @@ class SignUp(View):
             elif not password_regex.match(password):
                 return JsonResponse({"message": "PASSWORD_VALIDATION_ERROR"}, status=400)
 
-            try:
-                user = User.objects.get(email=email)
+            elif User.objects.filter(email=email).exists():
                 return JsonResponse({"message": "USER_ALREADY_EXIST"}, status=409)
 
-            except User.DoesNotExist:
+            else:
                 user = User.objects.create(
                     name         = name,
                     email        = email,
