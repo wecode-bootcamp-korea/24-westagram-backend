@@ -1,5 +1,6 @@
 import re
 
+'''
 class EmailValidationError(Exception):
     def __init__(self):
         super().__init__('EmailValidationError')
@@ -11,12 +12,17 @@ class PasswordValidationError(Exception):
 class AlreadyExist(Exception):
     def __init__(self):
         super().__init__('AlreadyExist')
+'''
 
-def Raise_validation(email, password):
+def EmailValidation(email):
     if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
-        raise EmailValidationError
+        return True
     
+    return False
+
+def PasswordValidation(password):
     if not re.match('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$', password):
-        raise PasswordValidationError
-    return
+        return True
+    
+    return False
 

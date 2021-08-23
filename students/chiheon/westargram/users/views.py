@@ -2,16 +2,11 @@
 
 import json
 
-from django.http  import JsonResponse as JR
+from django.http  import JsonResponse
 from django.views import View
 
 from users.models import User
-from . validation import (
-        EmailValidationError, 
-        PasswordValidationError,
-        AlreadyExist, 
-        Raise_validation
-        )
+from . validation import EmailValidation, PasswordValidation
 
 class UserView(View):
     def post(self,request):
@@ -21,29 +16,24 @@ class UserView(View):
 
         try:
             if User.objects.filter(email = email_data).exists():
-                raise AlreadyExist
+                return JsonResponse({'MESSAGE' : 'EMAIL ALREADY EXISTS'}, status = 400)
             
-            Raise_validation(email_data, password_data)
+            if EmailValidation(email_data):
+                return JsonResponse({'MESSAGE' : 'EMAIL VALIDATION ERROR'}, status = 400)
+
+            if PasswordValidation(password_data):
+                return JsonResponse({'MESSAGE' : 'PASSWORD VALIDATION ERROR'}, status = 400)
                 
             user = User.objects.create(
-                    first_name = data['first_name'],
-                    last_name  = data['last_name'],
-                    email      = data['email'],
-                    password   = data['password'],
+                    first_name   = data['first_name'],
+                    last_name    = data['last_name'],
+                    email        = data['email'],
+                    password     = data['password'],
                     phone_number = data['phone_number'],
-                    gender     = data['gender'],
-                    birth      = data['birth']
+                    gender       = data['gender'],
+                    birth        = data['birth']
                     )
-            return JR({'message' : 'SUCCESS'}, status = 201)
-        
-        except EmailValidationError as emailError:
-            return JR({'message' : f'{emailError}'}, status = 403)
-        
-        except PasswordValidationError as pwdError:
-            return JR({'message' : f'{pwdError}'}, status = 403)
-
-        except AlreadyExist as a:
-            return JR({'message' : f'{a}'}, status = 402)
+            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
         
         except KeyError as k:
-            return JR({'message' : 'KEY_ERROR'}, status = 40)
+            return JsonResponse({'message' : 'KEY_ERROR'}, status = 400)
