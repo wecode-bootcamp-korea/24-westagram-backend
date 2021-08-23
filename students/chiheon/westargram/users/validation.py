@@ -1,18 +1,24 @@
 import re
 
-def Validate_email(email):
-    email_regex = re.compile('[^a-zA-Z0-9_]')
-    email_id = email.split('@')[0]
-    if email_regex.search(email_id):
-        return 'ValidationError'
-    elif len(email_id)==0:
-        return 'KeyError'
-    return 'Success'
+from django.http import JsonResponse as JR
 
-def Validate_password(password):
-    password_regex = re.compile('[^a-zA-Z0-9_]')
-    if len(password)==0:
-        return 'KeyError'
-    elif password.isdigit() or len(password) < 8 or not password_regex.search(password):
-        return 'ValidationError'
-    return 'Success'
+class EmailValidationError(Exception):
+    def __init__(self):
+        super().__init__('EmailValidationError')
+
+class PasswordValidationError(Exception):
+    def __init__(self):
+        super().__init__('PasswordValidationError')
+
+class AlreadyExist(Exception):
+    def __init__(self):
+        super().__init__('AlreadyExist')
+
+def Raise_validation(email, password):
+    if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+        raise EmailValidationError
+    
+    if not re.match('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$', password):
+        raise PasswordValidationError
+    return
+
