@@ -1,5 +1,6 @@
 import json
 import re
+import bcrypt
 
 from django.http  import JsonResponse
 from django.views import View
@@ -28,10 +29,11 @@ class SinupView(View):
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'MESSAGE': 'REGISTERED_EMAIL'})
 
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
             user = User(
                 name         = name,
                 email        = email,
-                password     = password,
+                password     = hashed_password,
                 phone_number = phone_number,
                 address      = address
             )
