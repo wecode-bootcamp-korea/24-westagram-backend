@@ -7,6 +7,3 @@ from django.http import JsonResponse
 from users.models import User
 import re
 
-# Create your views here.
-
-
