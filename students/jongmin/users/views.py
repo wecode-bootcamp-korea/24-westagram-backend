@@ -13,21 +13,25 @@ class Signup(View):
         try: 
             data = json.loads(request.body)
             
-            phone_number = data['phone_number']
-            email        = data['email']
-            password     = data['password']
+            name          = data['name']
+            phone_number  = data['phone_number']
+            gender        = data['gender']
+            address       = data['address']
+            birth         = data['birth']
+            email         = data['email']
+            password      = data['password']
 
             #phone validation 
-            if re.match('/^\d{3}-\d{3,4}-\d{4}$/', phone_number):
-                return JsonResponse({"MESSAGE": "KEY_ERROR"}, status =400)
+            if not re.match('^\d{3}-\d{3,4}-\d{4}$', phone_number):
+                return JsonResponse({"MESSAGE": "KEY_ERROR1"}, status =400)
 
             #email validation
-            if re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
-                return JsonResponse({"MESSAGE": "KEY_ERROR"}, status =400)
+            if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+                return JsonResponse({"MESSAGE": "KEY_ERROR2"}, status =400)
 
             #password validation
-            if re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}', password):
-                return JsonResponse({"MESSAGE":"KEY_ERROR"}, status =400)
+            if not re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*~])[A-Za-z\d~!@#$%^&*]{8,}', password):
+                return JsonResponse({"MESSAGE":"KEY_ERROR3"}, status =400)
             
             User.objects.create(
                 name          = data['name'],
@@ -41,5 +45,5 @@ class Signup(View):
             return JsonResponse({"MESSAGE":"SUCCESS"}, status = 201) 
           
         except KeyError:
-            JsonResponse({"MESSAGE":"KEY_ERROR"}, status =400)
+            JsonResponse({"MESSAGE":"KEY_ERROR4"}, status =400)
             
