@@ -1,26 +1,22 @@
 import json
+import re
 
 from django.http import JsonResponse
 from django.views import View
 
 from users.models import User
-from django.db import IntegrityError
-import re
+
 
 class SignupView(View) :
     def post(self, request) :
-        data = json.loads(request.body)
-        if ('email' not in data) or ('password' not in data): 
-            return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
-        email_checker = re.compile('^[a-zA-Z0-9!#$%^&*()]+@[a-z]+.[a-z]+$')
-        valid_email = email_checker.match(data['email'])
-        if not valid_email :
-            return JsonResponse({'MESSAGE':'INVALID_EMAIL_ERROR'},status=400)
-        password_checker = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,100}$')
-        valid_password = password_checker.match(data['password'])
-        if not valid_password :
-            return JsonResponse({'MESSAGE':'INVALID_PASSWORD_ERROR'},status=400)
         try :
+            data = json.loads(request.body)
+            if not re.compile('^[a-zA-Z0-9!#$%^&*()]+@[a-z]+.[a-z]+$').match(data['email']) :
+                return JsonResponse({'MESSAGE':'INVALID_EMAIL_ERROR'},status=400)
+            if not re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,100}$').match(data['password']) :
+                return JsonResponse({'MESSAGE':'INVALID_PASSWORD_ERROR'},status=400)
+            if User.objects.filter(email=email).exists() :
+                return JsonResponse({'MESSAGE':'DUPLICATION_ERROR'}, status=400)
             User.objects.create(
                 name     = data['name'],
                 email    = data['email'],
@@ -28,6 +24,6 @@ class SignupView(View) :
                 phone    = data['phone']
             )
             return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
-            #
-        except IntegrityError as e:
-            return JsonResponse({'MESSAGE':'DUPLICATION_ERROR'}, status=400)
+        except KeyError :
+            return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
+
