@@ -17,7 +17,7 @@ class UsersView(View):
             if not Valid_email.match(email):
                 return JsonResponse({'MESSAGE':'EMAIL_VALIDATION'}, status=400)
                 
-            Valid_password = re.compile('^[a-zA_Z0-9$@$!%*#?&]{8,}$')
+            Valid_password = re.compile('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$')
             if not Valid_password.match(password):
                 return JsonResponse({'MESSAGE':'PASSWORD_VALIDATION'}, status=400)
             
