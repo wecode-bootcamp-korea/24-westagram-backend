@@ -7,7 +7,7 @@ class User(models.Model):
     password    = models.CharField(max_length=16)
     cell_number = models.CharField(max_length=13)
     address     = models.CharField(max_length=50)
-    birthday	= models.DateField("")
+    birthday	= models.DateField()
     sex	        = models.CharField(max_length=2)
 
 
