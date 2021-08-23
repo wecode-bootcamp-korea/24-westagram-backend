@@ -7,36 +7,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from users.models import User
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class LoginView(View) :
     def post(self, request) :        
         try :
