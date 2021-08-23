@@ -25,7 +25,3 @@ class LoginView(View) :
         except User.DoesNotExist :
             return JsonResponse({'MESSAGE':'INVALID_USER'}, status=401)
 
-
-
-
-
