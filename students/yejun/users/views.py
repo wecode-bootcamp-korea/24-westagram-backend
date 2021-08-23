@@ -7,7 +7,7 @@ from django.views import View
 from .models import User
 
 
-class SignInView(View):
+class SignUpView(View):
     # 이메일 validation 과정에서 오류가 나면 예외처리 하여야 한다
     # 패스워드 validation 과정에서 오류가 나면 예외처리 하여야 한다
 
