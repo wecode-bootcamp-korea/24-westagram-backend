@@ -6,15 +6,15 @@ from django.http import JsonResponse
 
 from users.models import User
 
+# Registering a user 
 class SignupView(View):
-    # Registering a user 
     def post(self, request):
         try:
             data = json.loads(request.body)
 
             if not re.search('[a-zA-Z0-9.+-]+@'
                                     '[a-zA-Z0-9-]+\.'
-                                    '[a-zA-Z0-9.]+', data['email']):
+                                    '[a-zA-Z0-9.]+', data['email']) :
                 return JsonResponse({'message' : 'INVALID EMAIL'}, status = 400)
             
             if not re.fullmatch('^(?=.*[a-z])(?=.*[A-Z])'
@@ -24,7 +24,7 @@ class SignupView(View):
 
             if User.objects.filter(email=data['email']).exists():
                 return JsonResponse({'message' : 'EMAIL DUPLICATE'}, status = 400)
-
+           
             User.objects.create(
                 name          = data['name'],
                 email         = data['email'],
