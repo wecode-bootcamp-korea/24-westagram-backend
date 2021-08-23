@@ -29,7 +29,7 @@ class SignUp(View):
                 return JsonResponse({"message": "PASSWORD_VALIDATION_ERROR"}, status=400)
 
             elif User.objects.filter(email=email).exists():
-                return JsonResponse({"message": "USER_ALREADY_EXIST"}, status=409)
+                return JsonResponse({"message": "USER_ALREADY_EXIST"}, status=400)
 
             else:
                 user = User.objects.create(
