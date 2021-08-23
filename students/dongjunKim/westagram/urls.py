@@ -18,13 +18,13 @@ from users.views import SignupView, LoginView
 
 
 user_urls = [
-    path('signup', SignupView.as_view()),
-    path('login', LoginView.as_view())
+    path('/signup', SignupView.as_view()),
+    path('/login',  LoginView.as_view())
 ]
 
 
 urlpatterns = [
-    path('users/', include(user_urls)),
+    path('users', include(user_urls)),
 ]
 
 
