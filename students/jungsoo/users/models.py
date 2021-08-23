@@ -7,7 +7,7 @@ class User(models.Model):
     email        = models.EmailField(max_length=50)
     password     = models.CharField(max_length=50)
     phone_number = PhoneNumberField(unique = True)
-    ect_info     = models.TextField()
+    address      = models.TextField()
 
     class Meta:
         db_table = 'users'
