@@ -2,11 +2,11 @@ from django.db import models
 
 
 class User(models.Model):
-    name     = models.CharField(max_length=30)
-    email    = models.EmailField()
-    password = models.CharField(max_length=50)
+    name          = models.CharField(max_length=30)
+    email         = models.EmailField()
+    password      = models.CharField(max_length=50)
     phone_number  = models.CharField(max_length=15)
-    bio      = models.TextField(default="", blank=True)
+    bio           = models.TextField(default="", blank=True)
 
     class Meta:
         db_table = "users"
