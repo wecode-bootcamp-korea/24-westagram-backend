@@ -3,6 +3,7 @@ import re
 
 from django.http import JsonResponse
 from django.views import View
+
 from users.models import User
 
 class UsersView(View):
@@ -16,11 +17,11 @@ class UsersView(View):
                 return JsonResponse({'MESSAGE':'EMPTY_ERROR'}, status=400)
             
             Valid_email = re.compile('^[a-zA-Z0-9_-]+@[a-z]+.[a-z]+$')
-            if Valid_email.match(email) == None:
+            if not Valid_email.match(email):
                 return JsonResponse({'MESSAGE':'NOT_VALID_EMAIL'}, status=400)
                 
             Valid_password = re.compile('^[a-zA_Z0-9$@$!%*#?&]{8,}$')
-            if Valid_password.match(password) == None:
+            if not Valid_password.match(password):
                 return JsonResponse({'MESSAGE':'NOT_VALID_PASSWORD'}, status=400)
             
             if User.objects.filter(email=email).exists():
