@@ -1,4 +1,5 @@
 import json
+import re 
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -6,15 +7,39 @@ from django.views import View
 from users.models import User
 
 # Create your views here.
-class UsersView(View):
-    def post(self, request):
-        data = json.loads(request.body)
-        User.objects.create(
-            name         = data['name'],
-            phone_number = data['phone_number'],
-            gender       = data['gender'],
-            address      = data['address'],
-            birth        = data['birth'],
-            email        = data['email'], #정규표현신식으로
+class Signup(View):
+
+    def post(self, request):        
+        try: 
+            data = json.loads(request.body)
+            
+            phone_number = data['phone_number']
+            email        = data['email']
             password     = data['password']
-        )
+
+            #phone validation 
+            if re.match('/^\d{3}-\d{3,4}-\d{4}$/', phone_number):
+                return JsonResponse({"MESSAGE": "KEY_ERROR"}, status =400)
+
+            #email validation
+            if re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+                return JsonResponse({"MESSAGE": "KEY_ERROR"}, status =400)
+
+            #password validation
+            if re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}', password):
+                return JsonResponse({"MESSAGE":"KEY_ERROR"}, status =400)
+            
+            User.objects.create(
+                name          = data['name'],
+                phone_number  = data['phone_number'],
+                gender        = data['gender'],
+                address       = data['address'],
+                birth         = data['birth'],
+                email         = data['email'],
+                password      = data['password']
+            )
+            return JsonResponse({"MESSAGE":"SUCCESS"}, status = 201) 
+          
+        except KeyError:
+            JsonResponse({"MESSAGE":"KEY_ERROR"}, status =400)
+            
