@@ -9,8 +9,8 @@ from users.models import User
 class UsersView(View):
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            email = data['email']
+            data     = json.loads(request.body)
+            email    = data['email']
             password = data['password']
 
             Valid_email = re.compile('^[a-zA-Z0-9_-]+@[a-z]+.[a-z]+$')
