@@ -3,7 +3,6 @@ import re
 
 from django.views import View
 from django.http import JsonResponse
-from django.db.utils import IntegrityError
 
 from users.models import User
 
