@@ -7,7 +7,6 @@ from django.http import JsonResponse
 
 from users.models import User
 
-# Create your views here.
 class SignUpView(View):
     
     def post(self,request):
@@ -44,5 +43,3 @@ class SignUpView(View):
 
         except KeyError as e:
             return JsonResponse({"MESSAGE" : "KEY_ERROR"}, status=400)
-        
-
