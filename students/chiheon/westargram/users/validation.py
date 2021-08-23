@@ -1,7 +1,5 @@
 import re
 
-from django.http import JsonResponse as JR
-
 class EmailValidationError(Exception):
     def __init__(self):
         super().__init__('EmailValidationError')
