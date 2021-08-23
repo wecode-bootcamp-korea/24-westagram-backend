@@ -63,16 +63,16 @@ class Login(View):
             email    = data["email"]
             password = data["password"]
 
-            try:
+
+            if User.objects.filter(email=email).exists():
                 user = User.objects.get(email=email)
 
                 if user.password == password:
                     return JsonResponse({"Message": "SUCCESS"}, status=200)
-                else:
-                    return JsonResponse({"message": "INVALID_USER : Password"}, status=401)
 
-            except User.DoesNotExist:
-                return JsonResponse({"message": "INVALID_USER : E-mail"}, status=401)
+                return JsonResponse({"message": "INVALID_USER : Password"}, status=401)
+            
+            return JsonResponse({"message": "INVALID_USER : E-mail"}, status=401)
 
         except JSONDecodeError:
             return JsonResponse({"message": "JSON_DECODE_ERROR"}, status=400)
