@@ -10,6 +10,5 @@ class User(models.Model):
     birthday	= models.DateField()
     sex	        = models.CharField(max_length=2)
 
-
     class Meta:
         db_table = "users"
