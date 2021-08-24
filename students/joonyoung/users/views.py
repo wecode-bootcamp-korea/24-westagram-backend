@@ -1,8 +1,10 @@
 import re
 import json
 import bcrypt
+import jwt
 from json.decoder import JSONDecodeError
 
+from my_settings import SECRET_KEY, ALGORITHM
 from django.http import JsonResponse
 from django.views import View
 
@@ -67,8 +69,9 @@ class Login(View):
             if User.objects.filter(email=email).exists():
                 user = User.objects.get(email=email)
 
-                if user.password == password:
-                    return JsonResponse({"Message": "SUCCESS"}, status=200)
+                if bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
+                    encoded_jwt = jwt.encode({"user_id": user.id}, SECRET_KEY, algorithm=ALGORITHM)
+                    return JsonResponse({"access_token": encoded_jwt, "user_id": user.id}, status=200)
 
                 return JsonResponse({"message": "INVALID_USER : Password"}, status=401)
             
