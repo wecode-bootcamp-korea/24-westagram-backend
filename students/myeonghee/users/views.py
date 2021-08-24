@@ -54,7 +54,7 @@ class SignInView(View):
             if not user_check.exists():
                 return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
             
-            if not user_check.filter(password=data["password"]).exists:
+            if not user_check.filter(password=data["password"]).exists():
                 return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
 
             return  JsonResponse({"MESSAGE": "SUCCESS"}, status=200)
