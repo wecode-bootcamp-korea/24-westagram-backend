@@ -1,8 +1,6 @@
 import json
 import re
-import bcrypt
 
-from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 
@@ -50,12 +48,10 @@ class SignInView(View):
         data = json.loads(request.body)
         
         try:
-            user_check = User.objects.filter(email=data["email"])
-            
-            if not user_check.exists():
+            if not User.objects.filter(email=data["email"]).exists():
                 return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
             
-            if not user_check.filter(password=data["password"]).exists():
+            if not User.objects.filter(email=data["email"]).filter(password=data["password"]).exists():
                 return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
 
             return  JsonResponse({"MESSAGE": "SUCCESS"}, status=200)
