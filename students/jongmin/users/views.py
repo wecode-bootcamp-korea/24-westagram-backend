@@ -1,14 +1,13 @@
 import json
 import re 
 
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views import View
+
 from users.models import User
 
 # Create your views here.
 class Signup(View):
-
     def post(self, request):        
         try: 
             data = json.loads(request.body)
@@ -21,18 +20,18 @@ class Signup(View):
             email         = data['email']
             password      = data['password']
 
-            #phone validation 
             if not re.match('^\d{3}-\d{3,4}-\d{4}$', phone_number):
-                return JsonResponse({"MESSAGE": "KEY_ERROR1"}, status =400)
+                return JsonResponse({"MESSAGE": "INVALID_FORMAT"}, status =400)
 
-            #email validation
             if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
-                return JsonResponse({"MESSAGE": "KEY_ERROR2"}, status =400)
+                return JsonResponse({"MESSAGE": "INVALID_FORMAT"}, status =400)
 
-            #password validation
             if not re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*~])[A-Za-z\d~!@#$%^&*]{8,}', password):
-                return JsonResponse({"MESSAGE":"KEY_ERROR3"}, status =400)
+                return JsonResponse({"MESSAGE":"INVALID_FORMAT"}, status =400)
             
+            if User.objects.filter(email = email).exists():
+                return JsonResponse({"MESSAGE":"AlREADY_EMAIL"})
+
             User.objects.create(
                 name          = data['name'],
                 phone_number  = data['phone_number'],
@@ -45,5 +44,5 @@ class Signup(View):
             return JsonResponse({"MESSAGE":"SUCCESS"}, status = 201) 
           
         except KeyError:
-            JsonResponse({"MESSAGE":"KEY_ERROR4"}, status =400)
+            JsonResponse({"MESSAGE":"KEY_ERROR"}, status =400)
             
