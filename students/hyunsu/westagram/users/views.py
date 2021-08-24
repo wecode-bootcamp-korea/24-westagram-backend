@@ -1,7 +1,9 @@
 import json
 import re
 import bcrypt
+import jwt
 
+from my_settings  import SECRET_KEY
 from django.http  import JsonResponse
 from django.views import View
 
@@ -45,13 +47,20 @@ class UserSign(View):
         data = json.loads(request.body)
         
         try:
-            if not User.objects.filter(email=data['email'],password=data['password']).exists():
+            if not User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message" : "INVALID_USER"}, status=401)
             
-            elif User.objects.get(email=data['email']).password != data['password']:
+            user_id = User.objects.get(email=data['email'])
+            
+            if not bcrypt.checkpw(data['password'].encode('utf-8'), user_id.password.encode('utf-8')):
                 return JsonResponse({"message" : "INVALID_USER"}, status=401)
 
-            return JsonResponse({"message" : "SUCCESS"}, status=200)
+            encode_jwt = jwt.encode({'user id' : user_id.id}, SECRET_KEY , algorithm='HS256')
+        
+            return JsonResponse({
+                "message" : "SUCCESS",
+                "token" : encode_jwt,
+                }, status=200)
 
         except KeyError:
             return JsonResponse({'message' : "KEY_ERROR"}, status=400)
