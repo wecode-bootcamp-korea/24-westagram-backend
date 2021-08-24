@@ -1,5 +1,6 @@
 import json
 import re
+import bcrypt
 
 from django.http  import JsonResponse
 from django.views import View
@@ -22,10 +23,15 @@ class UserView(View):
             if User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message" : "SAME EMAIL EXIST"}, status=400)
             
+            salt             = bcrypt.gensalt()
+            encode_password  = data['password'].encode('utf-8')
+            hash_password    = bcrypt.hashpw(encode_password, salt)
+            decode_password  = hash_password.decode('utf-8')
+            
             User.objects.create(
                 name         = data['name'],
                 email        = data['email'],
-                password     = data['password'],
+                password     = decode_password,
                 phone_number = data['phone_number'],
                 address      = data['address']
             )
