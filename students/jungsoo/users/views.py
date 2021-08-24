@@ -19,21 +19,19 @@ class CreateView(View):
             phone_number = data['phone_number'] 
             address      = data['address']
 
-            if User.objects.filter(email = data['email']).exists() == True:
+            if User.objects.filter(email = data['email']).exists():
                 return JsonResponse({"message" : "EXIST USER"}, status = 400)
             elif not email_regex.match(data['email']):
                 return JsonResponse({"message" : "INVALID_EMAIL"}, status = 400)
             elif not password_regex.match(data['password']):
                 return JsonResponse({"message" : "INVALID_PASSWORD"}, status = 400)
-            else:
-                User.objects.create(
-                    name         = data['name'],
-                    email        = data['email'], 
-                    password     = data['password'], 
-                    phone_number = data['phone_number'], 
-                    address      = data['address'], 
-                )
-                return JsonResponse({"message" : "SUCCESS"}, status = 201)
+            User.objects.create(
+                name         = data['name'],
+                email        = data['email'], 
+                password     = data['password'], 
+                phone_number = data['phone_number'], 
+                address      = data['address'], 
+            )
+            return JsonResponse({"message" : "SUCCESS"}, status = 201)
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status = 400)
-            
