@@ -6,6 +6,7 @@ from django.views     import View
 
 from users.models     import User
 
+# Sign Up View
 class UsersView(View):
     def post(self, request):
         try:
@@ -42,3 +43,22 @@ class UsersView(View):
 
         except KeyError:
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
+
+
+# Log In View
+class LoginsView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        try:
+            if not User.objects.filter(email=data['email']).exists():
+                return JsonResponse({'MESSAGE':'INVALIDE USER'}, status=401)
+
+            elif not User.objects.filter(password=data['password']).exists():
+                return JsonResponse({'MESSAGE':'INVALIDE USER'}, status=401)
+            
+            return JsonResponse({'MESSSAGE':'LOG IN SUCCESS'}, status=200)
+
+        except KeyError:
+            return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
+
+
