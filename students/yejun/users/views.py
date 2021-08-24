@@ -31,7 +31,7 @@ class SignUpView(View):
             User.objects.create(
                 name          = data["name"],
                 email         = data["email"],
-                password      = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt()),
+                password      = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt()).decode(),
                 phone_number  = data["phone_number"],
                 date_of_birth = data["date_of_birth"],
             )
