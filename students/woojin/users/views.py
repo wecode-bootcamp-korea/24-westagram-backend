@@ -53,7 +53,7 @@ class LoginsView(View):
             if not User.objects.filter(email=data['email']).exists():
                 return JsonResponse({'MESSAGE':'INVALIDE USER'}, status=401)
 
-            elif User.objects.filter(password=data['password']).exists():
+            elif not User.objects.filter(password=data['password']).exists():
                 return JsonResponse({'MESSAGE':'INVALIDE USER'}, status=401)
             
             else:
@@ -63,22 +63,21 @@ class LoginsView(View):
             return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
 
 
-''' Second solution
-# Log In View
-class LoginsView(View):
-    def post(self, request):
-        data = json.loads(request.body)
-        try:
-            if User.objects.filter(email=data['email']).exists():
-                user = User.objects.get(email=data['email'])
-                if user.password == data['password']:
-                    return JsonResponse({'MESSAGE':'LOG IN SUCCESS'}, status=200)
-                return JsonResponse({'MESSSAGE':'INVALID_USER'}, status=401)
-            return JsonResponse({'MESSSAGE':'INVALID_USER'}, status=401)
 
-        except KeyError:
-            return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
-'''
+# # Log In View
+# class LoginsView(View):
+#     def post(self, request):
+#         data = json.loads(request.body)
+#         try:
+#             if User.objects.filter(email=data['email']).exists():
+#                 user = User.objects.get(email=data['email'])
+#                 if user.password == data['password']:
+#                     return JsonResponse({'MESSAGE':'LOG IN SUCCESS'}, status=200)
+#                 return JsonResponse({'MESSSAGE':'INVALID_USER'}, status=401)
+#             return JsonResponse({'MESSSAGE':'INVALID_USER'}, status=401)
+
+#         except KeyError:
+#             return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
             
 
 
