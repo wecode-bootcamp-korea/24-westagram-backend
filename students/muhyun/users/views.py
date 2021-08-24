@@ -1,4 +1,4 @@
-import json, re
+import json, re, bcrypt
 
 from django.http      import JsonResponse
 from django.views     import View
@@ -24,10 +24,14 @@ class SignUpView(View):
             if User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message": "THIS EMAIL ALREADY EXISTS"}, status=400)
 
+            password = data['password'].encode('utf-8')
+            salt = bcrypt.gensalt()
+            encrypted = bcrypt.hashpw(password, salt).decode()
+
             User.objects.create(
                 name=data['name'],
                 email=data['email'],
-                password=data['password'],
+                password=encrypted,
                 phone_number=data['phone_number'],
                 address=data['address']
             )
@@ -45,6 +49,7 @@ class LogInView(View):
         try:
             if not User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message": "EMAIL ID NOT EXISTS"}, status=401)
+
             elif User.objects.get(email=data['email']).password != data['password']:
                 return JsonResponse({"message": "INVALID PASSWORD"}, status=401)
 
