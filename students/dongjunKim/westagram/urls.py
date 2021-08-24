@@ -23,8 +23,7 @@ user_urls = [
 ]
 
 
+
 urlpatterns = [
     path('users', include(user_urls)),
 ]
-
-
