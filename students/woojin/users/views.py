@@ -50,6 +50,25 @@ class LoginsView(View):
     def post(self, request):
         data = json.loads(request.body)
         try:
+            if not User.objects.filter(email=data['email']).exists():
+                return JsonResponse({'MESSAGE':'INVALIDE USER'}, status=401)
+
+            elif User.objects.filter(password=data['password']).exists():
+                return JsonResponse({'MESSAGE':'INVALIDE USER'}, status=401)
+            
+            else:
+                return JsonResponse({'MESSSAGE':'LOG IN SUCCESS'}, status=200)
+
+        except KeyError:
+            return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
+
+
+''' Second solution
+# Log In View
+class LoginsView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        try:
             if User.objects.filter(email=data['email']).exists():
                 user = User.objects.get(email=data['email'])
                 if user.password == data['password']:
@@ -59,7 +78,7 @@ class LoginsView(View):
 
         except KeyError:
             return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
-
+'''
             
 
 
