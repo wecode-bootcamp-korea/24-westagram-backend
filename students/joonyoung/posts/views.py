@@ -180,7 +180,7 @@ class CommentView(View):
         try:
             data = json.loads(request.body)
 
-            comment  = data["comment"]
+            comment = data["comment"]
 
             if Comment.objects.filter(id=comment_id).exists():
                 if Comment.objects.get(id=comment_id).user.id == request.user.id:
@@ -251,7 +251,7 @@ class ToggleFollowView(View):
         try:
             data = json.loads(request.body)
 
-            follower_id = request.user.id
+            follower_id  = request.user.id
             following_id = data["following_id"]
 
             if Follow.objects.filter(Q(follower_id=follower_id) & Q(following_id=following_id)).exists():
