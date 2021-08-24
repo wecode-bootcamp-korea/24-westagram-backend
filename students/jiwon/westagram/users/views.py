@@ -10,10 +10,7 @@ class UserView(View):
     def post(self, request):
         data                = json.loads(request.body)
         email_validation    = re.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
-        password_validation = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$")
-
-        if data['password'] == '' or data['email'] == '':
-            return JsonResponse({'MESSAGE':"KEY_ERROR"}, status=400)    
+        password_validation = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$")  
             
         if User.objects.filter(email=data['email']).exists():
             return JsonResponse({'MESSAGE':"ALREADY EXISTED EMAIL"}, status=400)
