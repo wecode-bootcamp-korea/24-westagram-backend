@@ -1,6 +1,6 @@
 # Create your views here.
 
-import json
+import json, bcrypt
 
 from django.http  import JsonResponse
 from django.views import View
@@ -10,9 +10,9 @@ from . validation import EmailValidation, PasswordValidation
 
 class UserView(View):
     def post(self, request):
-        data          = json.loads(request.body)
-        email_data    = data['email']
-        password_data = data['password']
+        data                = json.loads(request.body)
+        email_data          = data['email']
+        password_data       = data['password']
 
         try:
             if User.objects.filter(email = email_data).exists():
@@ -23,12 +23,17 @@ class UserView(View):
 
             if PasswordValidation(password_data):
                 return JsonResponse({'MESSAGE' : 'PASSWORD VALIDATION ERROR'}, status = 400)
-                
-            user = User.objects.create(
+            
+            mySalt              = bcrypt.gensalt()
+            encoded_password    = password_data.encode('utf-8')
+            hashed_password     = bcrypt.hashpw(encoded_password, mySalt)
+            decoded_password    = hashed_password.decode('utf-8')
+            
+            User.objects.create(
                     first_name   = data['first_name'],
                     last_name    = data['last_name'],
                     email        = data['email'],
-                    password     = data['password'],
+                    password     = decoded_password,
                     phone_number = data['phone_number'],
                     gender       = data['gender'],
                     birth        = data['birth']
