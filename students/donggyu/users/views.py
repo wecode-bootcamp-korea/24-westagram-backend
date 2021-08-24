@@ -1,10 +1,13 @@
 import json
 import re
+import bcrypt
+import jwt
 
 from django.http  import JsonResponse
 from django.views import View
 
 from .models      import User
+from my_settings  import SECRET_KEY
 
 class SinupView(View):
     def post(self, request):
@@ -28,10 +31,11 @@ class SinupView(View):
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'MESSAGE': 'REGISTERED_EMAIL'})
 
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
             user = User(
                 name         = name,
                 email        = email,
-                password     = password,
+                password     = hashed_password,
                 phone_number = phone_number,
                 address      = address
             )
@@ -56,10 +60,11 @@ class LoginView(View):
 
             user = User.objects.get(email=email)
             
-            if user.password != password:
+            if not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
                 return JsonResponse({"MESSAGE": "INVALID_USER"}, status=401)
 
-            return JsonResponse({"message": "SUCCESS"}, status=200)
+            access_token = jwt.encode({'id':user.id}, SECRET_KEY, algorithm='HS256')
+            return JsonResponse({"message": "SUCCESS", "access_token": access_token}, status=200)
         except ValueError:
             return JsonResponse({'MESSAGE': "VALUE_ERROR"}, status=400)
         except KeyError:
