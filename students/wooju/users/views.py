@@ -24,7 +24,7 @@ class UsersView(View):
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'MESSAGE':'AlREADY_EXISTED_EMAIL'}, status=400)
             
-            user = User.objects.create(
+            User.objects.create(
                 name          = data['name'],
                 email         = data['email'],
                 password      = data['password'],
