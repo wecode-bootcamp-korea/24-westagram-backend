@@ -1,5 +1,6 @@
 import json
 import re 
+import bcrypt
 
 from django.http import JsonResponse
 from django.views import View
@@ -20,23 +21,6 @@ class Signup(View):
             email         = data['email']
             password      = data['password']
 
-
-            #phone validation 
-            if re.match('/^\d{3}-\d{3,4}-\d{4}$/', phone_number):
-                return JsonResponse({"MESSAGE": "KEY_ERROR"}, status =400)
-
-            if not re.match('^\d{3}-\d{3,4}-\d{4}$', phone_number):
-                return JsonResponse({"MESSAGE": "INVALID_FORMAT"}, status =400)
-
-
-            if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
-                return JsonResponse({"MESSAGE": "INVALID_FORMAT"}, status =400)
-
-
-            #password validation
-            if re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}', password):
-                return JsonResponse({"MESSAGE":"KEY_ERROR"}, status =400)
-
             if not re.match('^\d{3}-\d{3,4}-\d{4}$', phone_number):
                 return JsonResponse({"MESSAGE": "INVALID_FORMAT"}, status=400)
 
@@ -45,14 +29,10 @@ class Signup(View):
 
             if not re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*~])[A-Za-z\d~!@#$%^&*]{8,}', password):
                 return JsonResponse({"MESSAGE":"INVALID_FORMAT"}, status=400)
-
-            if not re.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*~])[A-Za-z\d~!@#$%^&*]{8,}', password):
-                return JsonResponse({"MESSAGE":"INVALID_FORMAT"}, status =400)
-
-            
+           
             if User.objects.filter(email = email).exists():
                 return JsonResponse({"MESSAGE":"AlREADY_EMAIL"})
-
+            
             User.objects.create(
                 name          = data['name'],
                 phone_number  = data['phone_number'],
@@ -60,7 +40,8 @@ class Signup(View):
                 address       = data['address'],
                 birth         = data['birth'],
                 email         = data['email'],
-                password      = data['password']
+                password      = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
             )
             return JsonResponse({"MESSAGE":"SUCCESS"}, status=201) 
           
