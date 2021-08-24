@@ -66,7 +66,7 @@ class LoginsView(View):
 
             token = jwt.encode({'id':User.objects.get(email=data['email']).id}, SECRET_KEY, algorithm='HS256')
                 
-            return JsonResponse({'TOKEN MESSAGE' : token}, status=200)
+            return JsonResponse({'MESSAGE' : 'LOG IN SUCCESS' , 'TOKEN MESSAGE' : token}, status=200)
 
         except KeyError:
             return JsonResponse({'MESSSAGE':'KEY_ERROR'}, status=400)
