@@ -9,7 +9,7 @@ from users.models import User
 class SignUpView(View):
     
     def post(self,request):
-        
+
         data = json.loads(request.body)
         
         try:
@@ -41,3 +41,20 @@ class SignUpView(View):
 
         except KeyError as e:
             return JsonResponse({"MESSAGE" : "KEY_ERROR"}, status=400)
+
+class SignInView(View):
+        
+    def post (self,request):
+        data = json.loads(request.body)
+        
+        try:
+            if not User.objects.filter(email=data["email"]).exists():
+                return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
+            
+            if not User.objects.filter(email=data["email"]).filter(password=data["password"]).exists():
+                return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
+
+            return  JsonResponse({"MESSAGE": "SUCCESS"}, status=200)
+
+        except KeyError as e:
+            return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
