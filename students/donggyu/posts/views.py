@@ -1,11 +1,12 @@
 import json
 
+from django.utils.decorators import method_decorator
 from django.http             import JsonResponse
 from django.views            import View
-from django.utils.decorators import method_decorator
+from django.db.models        import Q
 
 from users.models import User
-from .models      import Post, Comment
+from .models      import Post, Comment, Like
 from .decorator   import login_decorator
 
 
@@ -94,4 +95,23 @@ class CommentListView(View):
         
         return JsonResponse({'result':results}, status=200)
 
+@method_decorator(login_decorator, name='dispatch')
+class AddLike(View):
+    def post(self, request, post_id):
         
+        user = request.user
+                    
+        if not Post.objects.filter(id=post_id).exists():
+            return JsonResponse({'MESSAGE': "INVALID_POST"}, status=400)
+        
+        post = Post.objects.get(id=post_id)
+
+        if Like.objects.filter(Q(user=user.id)&Q(post=post.id)).exists():
+            Like.objects.filter(Q(user=user.id)&Q(post=post.id)).delete()
+            return JsonResponse({'MESSAGE': "CANCLE_LIKE"}, status=200)
+
+        post.likes.add(user)
+        return JsonResponse({'MESSAGE': "ADD_LIKE_SUCCESS"}, status=200)
+    
+        
+
