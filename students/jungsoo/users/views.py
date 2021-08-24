@@ -1,5 +1,6 @@
 import json
 import re
+import bcrypt
 
 from django.views import View
 from django.http import JsonResponse
@@ -29,7 +30,7 @@ class UserView(View):
             User.objects.create(
                 name         = data['name'],
                 email        = data['email'], 
-                password     = data['password'], 
+                password     = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
                 phone_number = data['phone_number'], 
                 address      = data['address'], 
             )
