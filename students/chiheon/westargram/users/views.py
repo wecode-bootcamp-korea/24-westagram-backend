@@ -9,7 +9,7 @@ from users.models import User
 from . validation import EmailValidation, PasswordValidation
 
 class UserView(View):
-    def post(self,request):
+    def post(self, request):
         data          = json.loads(request.body)
         email_data    = data['email']
         password_data = data['password']
@@ -33,7 +33,27 @@ class UserView(View):
                     gender       = data['gender'],
                     birth        = data['birth']
                     )
-            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
+            return JsonResponse({'MESSAGE' : 'SUCCESS'}, status = 201)
         
         except KeyError as k:
-            return JsonResponse({'message' : 'KEY_ERROR'}, status = 400)
+            return JsonResponse({'MESSAGE' : 'KEY_ERROR'}, status = 400)
+
+class Login(View):
+    def post(self, request):
+        data          = json.loads(request.body)
+
+        try:
+            email_data    = data['email']
+            password_data = data['password']
+
+            if not User.objects.filter(email = email_data).exists():
+                return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status = 401)
+
+            elif User.objects.get(email = email_data).password != password_data:
+                return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status = 401)
+            
+            return JsonResponse({'MESSAGE' : 'SUCCESS'}, status = 200)
+
+        except KeyError:
+            return JsonResponse({'MESSAGE' : 'KEY_ERROR'}, status = 400)
+
