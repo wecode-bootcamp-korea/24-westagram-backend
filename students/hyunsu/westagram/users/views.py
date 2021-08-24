@@ -41,6 +41,9 @@ class UserSign(View):
         try:
             if not User.objects.filter(email=data['email'],password=data['password']).exists():
                 return JsonResponse({"message" : "INVALID_USER"}, status=401)
+            
+            elif User.objects.get(email=data['email']).password != data['password']:
+                return JsonResponse({"message" : "INVALID_USER"}, status=401)
 
             return JsonResponse({"message" : "SUCCESS"}, status=200)
 
