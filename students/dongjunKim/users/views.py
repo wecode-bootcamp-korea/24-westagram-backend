@@ -1,5 +1,6 @@
 import json
 import re
+import bcrypt
 
 from django.http import JsonResponse
 from django.views import View
@@ -32,18 +33,18 @@ class SignupView(View) :
             if not re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,100}$').match(data['password']) :
                 return JsonResponse({'MESSAGE':'INVALID_PASSWORD_ERROR'},status=400)
 
-            if User.objects.filter(email=email).exists() :
+            if User.objects.filter(email=data['email']).exists() :
                 return JsonResponse({'MESSAGE':'DUPLICATION_ERROR'}, status=400)
+
+            hashed_password = bcrypt.hashpw( data['password'].encode('utf-8'), bcrypt.gensalt() )
 
             User.objects.create(
                 name     = data['name'],
                 email    = data['email'],
-                password = data['password'],
+                password = hashed_password,
                 phone    = data['phone']
             )
-
             return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
 
         except KeyError :
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
-
