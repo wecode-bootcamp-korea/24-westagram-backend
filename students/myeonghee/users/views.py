@@ -36,7 +36,6 @@ class SignUpView(View):
             name        = data["name"],
             email       = data["email"],
             password    = decoded_hash_pwd,
-            # password    = data['password'],
             cell_number = data["cell_number"],    
             address     = data["address"],
             birthday    = data["birthday"],
