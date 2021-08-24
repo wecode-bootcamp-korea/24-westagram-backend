@@ -84,7 +84,10 @@ class Login(View):
 
             return JsonResponse({"MESSAGE":"SUCCESS"}, status=200)
 
+        except ValueError:
+            return JsonResponse({"MESSAGE":"VALUE_ERROR"}, status=400)
         except KeyError:
-            JsonResponse({"MESSAGE":"KEY_ERROR"}, status=400)
+            return JsonResponse({"MESSAGE":"KEY_ERROR"}, status=400)
 
+        
 
