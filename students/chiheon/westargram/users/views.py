@@ -1,12 +1,13 @@
 # Create your views here.
 
-import json, bcrypt
+import json, bcrypt, jwt
 
 from django.http  import JsonResponse
 from django.views import View
 
-from users.models import User
-from . validation import EmailValidation, PasswordValidation
+from users.models           import User
+from . validation           import EmailValidation, PasswordValidation
+from westargram.my_settings import SECRET_KEY
 
 class UserView(View):
     def post(self, request):
@@ -54,11 +55,15 @@ class Login(View):
             if not User.objects.filter(email = email_data).exists():
                 return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status = 401)
 
-            elif User.objects.get(email = email_data).password != password_data:
+            user = User.objects.get(email = email_data)
+            
+            if not bcrypt.checkpw(password_data.encode('utf-8'), user.password.encode('utf-8')):
                 return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status = 401)
             
-            return JsonResponse({'MESSAGE' : 'SUCCESS'}, status = 200)
+            encoded_jwt = jwt.encode({'id' : user.id}, SECRET_KEY, algorithm = 'HS256')
+            return JsonResponse({'MESSAGE' : 'SUCCESS', 'TOKEN' : encoded_jwt}, status = 200)
 
+            
         except KeyError:
             return JsonResponse({'MESSAGE' : 'KEY_ERROR'}, status = 400)
 
