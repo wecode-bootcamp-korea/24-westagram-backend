@@ -41,10 +41,13 @@ class SignupView(View) :
             User.objects.create(
                 name     = data['name'],
                 email    = data['email'],
-                password = hashed_password,
+                password = hashed_password.decode(),
                 phone    = data['phone']
             )
             return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
 
         except KeyError :
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
+~                                                                                                                                                                                                          
+~                                                                                                                                                                                                          
+~                                                                                         
