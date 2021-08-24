@@ -28,15 +28,15 @@ class SignUpView(View):
             if not email_validator:
                 return JsonResponse({"MESSAGE" : "EMAIL FORM ERROR"}, status=404)
 
-            # origin_password  = data['password']
-            # hashed_password  = bcrypt.hashpw(origin_password.encode('utf-8'), bcrypt.gensalt())
-            # decoded_hash_pwd = hashed_password.decode('utf-8')  
+            origin_password  = data['password']
+            hashed_password  = bcrypt.hashpw(origin_password.encode('utf-8'), bcrypt.gensalt())
+            decoded_hash_pwd = hashed_password.decode('utf-8')  
 
             User.objects.create(
             name        = data["name"],
             email       = data["email"],
-            # password    = decoded_hash_pwd,
-            password    = data['password'],
+            password    = decoded_hash_pwd,
+            # password    = data['password'],
             cell_number = data["cell_number"],    
             address     = data["address"],
             birthday    = data["birthday"],
