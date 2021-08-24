@@ -42,3 +42,6 @@ class Follow(models.Model):
 
     class Meta:
         db_table = "follows"
+
+    def __str__(self):
+        return self.follower.name + " following " + self.following.name
