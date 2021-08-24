@@ -5,8 +5,7 @@ from django.views    import View
 
 from users.models import User
 
-
-class UserView(View):
+class SignupView(View):
     def post(self, request):
         data                = json.loads(request.body)
         email_validation    = re.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
@@ -29,3 +28,18 @@ class UserView(View):
             favorite_food   = data['favorite_food']
             )
         return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
+
+class SigninView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+
+            if not User.objects.filter(email=data['email']).exists(): 
+                return JsonResponse({"message": "INVALID_USER"}, status=401)
+
+            if User.objects.get(email = data['email']).password == data['password']:
+                return JsonResponse({"message": "SUCCESS"}, status=200)
+            return JsonResponse({"message": "INVALID_USER"}, status=401)
+
+        except KeyError:
+            return JsonResponse({"message": "KEY_ERROR"}, status=400)
