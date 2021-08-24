@@ -51,8 +51,8 @@ class Login(View):
 
             elif User.objects.get(email = email_data).password != password_data:
                 return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status = 401)
-            else:
-                return JsonResponse({'MESSAGE' : 'SUCCESS'}, status = 200)
+            
+            return JsonResponse({'MESSAGE' : 'SUCCESS'}, status = 200)
 
         except KeyError:
             return JsonResponse({'MESSAGE' : 'KEY_ERROR'}, status = 400)
