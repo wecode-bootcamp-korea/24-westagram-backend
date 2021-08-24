@@ -15,8 +15,9 @@ class UsersView(View):
             salt = bcrypt.gensalt()
             name              = data['name']
             email             = data['email']
-            hashed_password   = bcrypt.hashpw(data['password'].encode('utf-8'), salt)
             cell_phone_number = data['cell_phone_number']
+            hashed_password   = bcrypt.hashpw(data['password'].encode('utf-8'), salt)
+            decoded_password  = hashed_password.decoded('utf-8')
 
             # Email Validation
             if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
@@ -37,7 +38,7 @@ class UsersView(View):
             User.objects.create(
                 name              = name,
                 email             = email,
-                password          = hashed_password.decode('utf-8'),
+                password          = decoded_password,
                 cell_phone_number = cell_phone_number
             )
 
