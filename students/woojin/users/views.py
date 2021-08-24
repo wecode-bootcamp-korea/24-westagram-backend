@@ -1,5 +1,6 @@
 import json
 import re
+import bcrypt
 
 from django.http      import JsonResponse
 from django.views     import View
@@ -11,17 +12,19 @@ class UsersView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
+            salt = bcrypt.gensalt()
             name              = data['name']
             email             = data['email']
-            password          = data['password']
             cell_phone_number = data['cell_phone_number']
+            hashed_password   = bcrypt.hashpw(data['password'].encode('utf-8'), salt)
+            decoded_password  = hashed_password.decoded('utf-8')
 
             # Email Validation
             if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
                 return JsonResponse({'MESSAGE':'Wrong e-mail form'}, status=400)
 
             # Password Validation
-            if not re.match('^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$', password):
+            if not re.match('^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$', data['password']):
                 return JsonResponse({'MESSAGE':'Wrong password form'}, status=400)
 
             # Cell Phone Validation
@@ -35,7 +38,7 @@ class UsersView(View):
             User.objects.create(
                 name              = name,
                 email             = email,
-                password          = password,
+                password          = decoded_password,
                 cell_phone_number = cell_phone_number
             )
 
