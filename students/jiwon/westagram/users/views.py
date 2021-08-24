@@ -5,7 +5,6 @@ from django.views    import View
 
 from users.models import User
 
-
 class SignupView(View):
     def post(self, request):
         data                = json.loads(request.body)
@@ -29,7 +28,6 @@ class SignupView(View):
             favorite_food   = data['favorite_food']
             )
         return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
-
 
 class SigninView(View):
     def post(self, request):
