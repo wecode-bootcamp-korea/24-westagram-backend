@@ -1,4 +1,5 @@
 import json
+import bcrypt
 import re
 
 from django.views import View
@@ -9,7 +10,6 @@ from users.models import User
 class SignUpView(View):
     
     def post(self,request):
-
         data = json.loads(request.body)
         
         try:
@@ -28,10 +28,14 @@ class SignUpView(View):
             if not email_validator:
                 return JsonResponse({"MESSAGE" : "EMAIL FORM ERROR"}, status=404)
 
+            origin_password  = data['password']
+            hashed_password  = bcrypt.hashpw(origin_password.encode('utf-8'), bcrypt.gensalt())
+            decoded_hash_pwd = hashed_password.decode('utf-8')  
+
             User.objects.create(
             name        = data["name"],
             email       = data["email"],
-            password    = data["password"],
+            password    = decoded_hash_pwd,
             cell_number = data["cell_number"],    
             address     = data["address"],
             birthday    = data["birthday"],
@@ -51,10 +55,16 @@ class SignInView(View):
             if not User.objects.filter(email=data["email"]).exists():
                 return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
             
-            if not User.objects.filter(email=data["email"]).filter(password=data["password"]).exists():
-                return JsonResponse({"MESSAGE" : "INVALID_USER"}, status=401)
+            entered_pwd       = data['password']
+            encoded_enter_pwd = entered_pwd.encode('utf-8')
 
-            return  JsonResponse({"MESSAGE": "SUCCESS"}, status=200)
+            user_pwd         = User.objects.get(email=data["email"]).password
+            encoded_user_pwd = user_pwd.encode('utf-8')
+
+            if bcrypt.checkpw(encoded_enter_pwd,encoded_user_pwd):
+                return  JsonResponse({"MESSAGE": "SUCCESS"}, status=200)
+            else:    
+                return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=200)
 
         except KeyError as e:
             return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
