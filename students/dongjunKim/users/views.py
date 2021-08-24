@@ -47,9 +47,7 @@
  47             return JsonResponse({'MESSAGE':'SUCCESS'}, status=201)
  48             
  49         except KeyError :
- 50             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
- 51             
- 52 
+ 50             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400) 
 ~                                                                                                                                                                                                          
 ~                                                                                                                                                                                                          
 ~                                                                                         
