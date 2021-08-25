@@ -72,8 +72,6 @@ class SignInView(View):
                 return  JsonResponse({"MESSAGE": "SUCCESS", "TOKEN" : access_token}, status=200)
             else:    
                 return  JsonResponse({"MESSAGE": "LOGIN_FAIL"}, status=400)
-                
-
 
         except KeyError as e:
             return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
