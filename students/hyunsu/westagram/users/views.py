@@ -50,12 +50,12 @@ class UserSign(View):
             if not User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message" : "INVALID_USER"}, status=401)
             
-            user_id = User.objects.get(email=data['email'])
+            user = User.objects.get(email=data['email'])
             
             if not bcrypt.checkpw(data['password'].encode('utf-8'), user_id.password.encode('utf-8')):
                 return JsonResponse({"message" : "INVALID_USER"}, status=401)
 
-            encode_jwt = jwt.encode({'user id' : user_id.id}, SECRET_KEY , algorithm='HS256')
+            encode_jwt = jwt.encode({'user id' : user.id}, SECRET_KEY , algorithm='HS256')
         
             return JsonResponse({
                 "message" : "SUCCESS",
