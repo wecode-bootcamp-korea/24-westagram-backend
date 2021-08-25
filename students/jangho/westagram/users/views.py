@@ -36,7 +36,7 @@ class SignUpView(View):
 
 class SignInView(View):
     def post(self, request):
-        data = json.loads(request.body)
+        data        = json.loads(request.body)
         check_email = User.objects.filter(email=data['email'])
 
         try:
