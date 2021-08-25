@@ -1,11 +1,13 @@
 import json
 import bcrypt
+import jwt
 import re
 
 from django.views import View
 from django.http import JsonResponse
 
 from users.models import User
+from westagram.settings import SECRET_KEY
 
 class SignUpView(View):
     
@@ -61,10 +63,18 @@ class SignInView(View):
             user_pwd         = User.objects.get(email=data["email"]).password
             encoded_user_pwd = user_pwd.encode('utf-8')
 
+            user_id = User.objects.get(email=data["email"]).id           
+
             if bcrypt.checkpw(encoded_enter_pwd,encoded_user_pwd):
-                return  JsonResponse({"MESSAGE": "SUCCESS"}, status=200)
+
+                access_token = jwt.encode({"user_id": user_id}, SECRET_KEY, algorithm='HS256')
+
+                return  JsonResponse({"MESSAGE": "SUCCESS", "TOKEN" : access_token}, status=200)
             else:    
-                return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=200)
+                return  JsonResponse({"MESSAGE": "LOGIN_FAIL"}, status=400)
+                
+
 
         except KeyError as e:
             return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
+        
