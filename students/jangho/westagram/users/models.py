@@ -11,3 +11,10 @@ class User(models.Model):
 
     class Meta():
         db_table = 'users'
+
+class Comment(models.Model):
+    email = models.EmailField(max_length=100, unique=True)
+    comment = models.CharField(max_length=500)
+
+    class Meta():
+        db_table = 'comments'
