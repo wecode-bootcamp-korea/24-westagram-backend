@@ -53,15 +53,17 @@ class UsersView(View):
 # Log In View
 class LoginsView(View):
     def post(self, request):
-        data = json.loads(request.body)
+        data           = json.loads(request.body)
+        login_email    = data['login_email']
+        login_password = data['login_password']
         try:
-            if not User.objects.filter(email=data['email']).exists():
+            if not User.objects.filter(email=login_email).exists():
                 return JsonResponse({'MESSAGE':'INVALIDE USER(e-mail)'}, status=401)
 
-            elif not bcrypt.checkpw(data['login_password'].encode('utf-8'), User.objects.get(email=data['email']).password.encode('utf-8')):
+            elif not bcrypt.checkpw(login_password.encode('utf-8'), User.objects.get(email=login_email).password.encode('utf-8')):
                 return JsonResponse({'MESSAGE':'INVALIDE USER(password)'}, status=401)
 
-            token = jwt.encode({'id':User.objects.get(email=data['email']).id}, SECRET_KEY, algorithm='HS256')
+            token = jwt.encode({'id':User.objects.get(email=login_email).id}, SECRET_KEY, algorithm='HS256')
                 
             return JsonResponse({'MESSAGE' : 'LOG IN SUCCESS' , 'TOKEN MESSAGE' : token}, status=200)
 
