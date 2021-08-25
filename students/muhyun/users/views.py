@@ -1,10 +1,10 @@
-import json, re, bcrypt
+import json, re, bcrypt, jwt
 
-from django.http      import JsonResponse
-from django.views     import View
+from django.http                 import JsonResponse
+from django.views                import View
 
-from .models          import User
-
+from .models                     import User
+from students.muhyun.my_settings import SECRET_KEY
 
 class SignUpView(View):
     def post(self, request):
@@ -50,12 +50,20 @@ class LogInView(View):
             if not User.objects.filter(email=data['email']).exists():
                 return JsonResponse({"message": "EMAIL ID NOT EXISTS"}, status=401)
 
-            elif User.objects.get(email=data['email']).password != data['password']:
+            user = User.objects.get(email=data['email'])
+
+            if not bcrypt.checkpw(data['password'].encode(), user.password.encode()):
                 return JsonResponse({"message": "INVALID PASSWORD"}, status=401)
 
-            return JsonResponse({"message": "SUCCESS"}, status=200)
+            token = jwt.encode({'id': user.id}, SECRET_KEY, algorithm='HS256')
+
+            return JsonResponse({
+                "message": "SUCCESS",
+                "token"  : token
+            },
+                status=200)
 
         except KeyError:
-            return JsonResponse({"message": "KEY_ERROR"}, status=400)
+            return JsonResponse({"message": "KEY_ERROR"}, status = 400)
 
 
