@@ -2,3 +2,5 @@ Django==3.2.4
 django-cors-headers==3.8.0
 mysqlclient==2.0.3
 PyMySQL==1.0.2
+django-phonenumber-field==5.2.0
+phonenumbers==8.12.27
