@@ -47,9 +47,9 @@ class LoginView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            user = User.objects.get(email=data['email'])
 
             if User.objects.filter(email = data['email']).exists():
+                user = User.objects.get(email=data['email'])
                 if bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
                     token = jwt.encode({'id' : user.id}, SECRET_KEY, algorithm='HS256')
                     return JsonResponse({'message' : 'SUCCESS', 'TOKEN' : token}, status = 200)
@@ -58,3 +58,4 @@ class LoginView(View):
             
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status = 400)
+        
