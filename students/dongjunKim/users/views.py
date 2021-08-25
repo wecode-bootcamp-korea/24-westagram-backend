@@ -60,3 +60,4 @@ class SignupView(View):
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
 
 
+
