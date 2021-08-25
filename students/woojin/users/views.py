@@ -19,7 +19,7 @@ class UsersView(View):
             email             = data['email']
             cell_phone_number = data['cell_phone_number']
             hashed_password   = bcrypt.hashpw(data['password'].encode('utf-8'), salt)
-            decoded_password  = hashed_password.decoded('utf-8')
+            decoded_password  = hashed_password.decode('utf-8')
 
             # Email Validation
             if not re.match('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
@@ -56,14 +56,15 @@ class LoginsView(View):
         data           = json.loads(request.body)
         login_email    = data['login_email']
         login_password = data['login_password']
+        user_email     = User.objects.get(email=login_email)
         try:
             if not User.objects.filter(email=login_email).exists():
                 return JsonResponse({'MESSAGE':'INVALIDE USER(e-mail)'}, status=401)
 
-            elif not bcrypt.checkpw(login_password.encode('utf-8'), User.objects.get(email=login_email).password.encode('utf-8')):
+            elif not bcrypt.checkpw(login_password.encode('utf-8'), user_email.password.encode('utf-8')):
                 return JsonResponse({'MESSAGE':'INVALIDE USER(password)'}, status=401)
 
-            token = jwt.encode({'id':User.objects.get(email=login_email).id}, SECRET_KEY, algorithm='HS256')
+            token = jwt.encode({'id' : user_email.id}, SECRET_KEY, algorithm='HS256')
                 
             return JsonResponse({'MESSAGE' : 'LOG IN SUCCESS' , 'TOKEN MESSAGE' : token}, status=200)
 
