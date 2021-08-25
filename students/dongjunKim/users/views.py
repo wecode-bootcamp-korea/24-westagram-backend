@@ -27,7 +27,7 @@ class LoginView(View):
             response = JsonResponse({'MESSAGE':'SUCCESS'}, status=200)
             response['access-token'] = encoded_jwt
             
-            return JsonResponse({'MESSAGE':'SUCCESS'}, status=200)
+            return response
         
         except KeyError:
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
