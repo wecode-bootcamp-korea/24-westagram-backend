@@ -47,10 +47,11 @@ class LoginView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
+            user = User.objects.get(email=data['email'])
 
             if User.objects.filter(email = data['email']).exists():
-                if bcrypt.checkpw(data['password'].encode('utf-8'), User.objects.get(email=data['email']).password.encode('utf-8')):
-                    token = jwt.encode({'id' : User.objects.get(email=data['email']).id}, SECRET_KEY, algorithm='HS256')
+                if bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
+                    token = jwt.encode({'id' : user.id}, SECRET_KEY, algorithm='HS256')
                     return JsonResponse({'message' : 'SUCCESS', 'TOKEN' : token}, status = 200)
                 
             return JsonResponse({'message' : 'INVALID_USER'}, status = 401)
