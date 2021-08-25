@@ -5,6 +5,7 @@ import re
 
 from django.views import View
 from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 
 from users.models import User
 from westagram.settings import SECRET_KEY
@@ -45,6 +46,8 @@ class SignUpView(View):
             )  
             return JsonResponse({"MESSAGE" : "CREATE"}, status=201)
 
+        except ValidationError as e:
+            return  JsonResponse({"MESSAGE": "DATA_FORMAT_ERROR"}, status=400)
         except KeyError as e:
             return JsonResponse({"MESSAGE" : "KEY_ERROR"}, status=400)
 
@@ -66,14 +69,12 @@ class SignInView(View):
             user_id = User.objects.get(email=data["email"]).id           
 
             if bcrypt.checkpw(encoded_enter_pwd,encoded_user_pwd):
-
+    
                 access_token = jwt.encode({"user_id": user_id}, SECRET_KEY, algorithm='HS256')
 
                 return  JsonResponse({"MESSAGE": "SUCCESS", "TOKEN" : access_token}, status=200)
             else:    
                 return  JsonResponse({"MESSAGE": "LOGIN_FAIL"}, status=400)
-                
-
 
         except KeyError as e:
             return  JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
