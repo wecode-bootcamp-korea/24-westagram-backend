@@ -1,9 +1,10 @@
-import json, re, bcrypt
+import json, re, bcrypt, jwt
 
 from django.http     import JsonResponse
 from django.views    import View
 
 from users.models import User
+from my_settings import SECRET_KEY 
 
 class SignupView(View):
     def post(self, request):
@@ -11,7 +12,6 @@ class SignupView(View):
         email_validation    = re.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
         password_validation = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$")  
         password = data['password']
-
             
         if User.objects.filter(email=data['email']).exists():
             return JsonResponse({'MESSAGE':"ALREADY EXISTED EMAIL"}, status=400)
@@ -38,13 +38,12 @@ class SigninView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-
-            if not User.objects.filter(email=data['email']).exists(): 
+            
+            if User.objects.filter(email=data['email']).exists():
+                if bcrypt.checkpw(data['password'].encode('utf-8'), (User.objects.get(email = data['email']).password).encode('utf-8')):
+                    access_token = jwt.encode({"id": User.objects.get(email = data['email']).id }, SECRET_KEY , algorithm="HS256")
+                    return JsonResponse({"message": "SUCCESS", 'token' : access_token}, status=200)
                 return JsonResponse({"message": "INVALID_USER"}, status=401)
-
-            if User.objects.get(email = data['email']).password == data['password']:
-                return JsonResponse({"message": "SUCCESS"}, status=200)
-            return JsonResponse({"message": "INVALID_USER"}, status=401)
 
         except KeyError:
             return JsonResponse({"message": "KEY_ERROR"}, status=400)
