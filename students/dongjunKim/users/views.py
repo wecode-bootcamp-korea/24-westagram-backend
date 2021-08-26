@@ -24,9 +24,7 @@ class LoginView(View):
                 return JsonResponse({'MESSAGE':'INVALID_USER'}, status=401)
 
             encoded_jwt = jwt.encode({'user-id':user.id}, SECRET_KEY, algorithm='HS256')
-            response = JsonResponse({'MESSAGE':'SUCCESS', 'token':encoded_jwt}, status=200)
-
-            return response
+            return JsonResponse({'MESSAGE':'SUCCESS', 'token':encoded_jwt}, status=200)
 
         except KeyError:
             return JsonResponse({'MESSAGE':'KEY_ERROR'}, status=400)
