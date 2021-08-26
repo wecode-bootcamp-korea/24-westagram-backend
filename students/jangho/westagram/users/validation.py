@@ -10,7 +10,7 @@ def email_validation(email_input) -> bool:
         return True
 
 def nickname_validation(nickname_input) -> bool:
-    if not re.match('[A-Za-z0-9]', nickname_input):
+    if not re.match('[A-Za-z0-9ㄱ-ㅎ가-힣]', nickname_input):
         return False
     else:
         return True

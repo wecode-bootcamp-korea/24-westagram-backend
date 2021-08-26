@@ -2,8 +2,9 @@ import json
 
 from django.http import JsonResponse, HttpResponse
 from django.views import View
+from django.db.utils import DataError
 
-from users.models import Comment, User
+from users.models import  User
 from . validation import email_validation, nickname_validation, password_validation
 
 class SignUpView(View):
@@ -32,23 +33,23 @@ class SignUpView(View):
             return JsonResponse({'message': 'SUCCESS!'}, status=201)
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
+        except DataError:
+            return JsonResponse({'message': 'DATA_TOO_LONG'}, status=400)
 
 
 class SignInView(View):
     def post(self, request):
-        data        = json.loads(request.body)
-        check_email = User.objects.filter(email=data['email'])
-
+        data       = json.loads(request.body)
+        user_check = User.objects.get(email=data['email'])
+        
         try:
-            if check_email.exists():
-                user_data = User.objects.get(email=data['email'])
-                print(user_data.email)
-                if user_data.password == data['password']:
-                    return JsonResponse({'message': 'LOGIN_SUCCESS'}, status=200)
-                else:
+            if user_check:
+                if user_check.password != data['password']:
                     return JsonResponse({'message': 'INVALID_PASSWORD'}, status=401)
-            else:
-                return JsonResponse({'message': 'INVALID_USER'}, status=401)
+                return JsonResponse({'message': 'LOGIN_SUCCESS'}, status=200)
+            return JsonResponse({'message': 'INVALID_USER'}, status=401)
         except KeyError:
             return JsonResponse({'message': 'KEY_ERROR'}, status=400)
+        
+
     
