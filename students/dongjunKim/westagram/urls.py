@@ -16,12 +16,7 @@ Including another URLconf
 from django.urls import include, path
 from users.views import SignupView, LoginView
 
-user_urls = [
-    path('signup', SignupView.as_view()),
-    path('login', LoginView.as_view())
-]
 urlpatterns = [
-    path('users/', include(user_urls)),
+    path('users/signup', SignupView.as_view()),
+    path('users/login', LoginView.as_view()),
 ]
-
-
