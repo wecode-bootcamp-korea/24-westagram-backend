@@ -4,3 +4,5 @@ mysqlclient==2.0.3
 PyMySQL==1.0.2
 django-phonenumber-field==5.2.0
 phonenumbers==8.12.27
+bcrypt==3.2.0
+pyjwt==2.1.0

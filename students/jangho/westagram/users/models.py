@@ -5,7 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 class User(models.Model):
     name     = models.CharField(max_length=45)
     email    = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=1000)
     phone    = PhoneNumberField(max_length=17, null=True, blank=True)
     nickname = models.CharField(max_length=45, unique=True)
 

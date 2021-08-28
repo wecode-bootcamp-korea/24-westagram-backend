@@ -16,7 +16,7 @@ def nickname_validation(nickname_input) -> bool:
         return True
 
 def password_validation(password_input) -> bool:
-    if not re.match('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$', password_input):
+    if not re.match('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*^#?&])[A-Za-z\d$@$!%*^#?&]{8,}$', password_input):
         return False
     else:
         return True
